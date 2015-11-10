@@ -1,10 +1,20 @@
 import numpy as np
 import numpy.random as rn
+import matplotlib.pyplot as plt
 
 def Run(p):
   CIJ = IzhikevichModularNetwork(1000, 8, 100, 1000, 200)
   CIJ = RewireModularNetwork(CIJ, 800, 100, p)
+  plt.matshow(CropMatrix(CIJ, 800, 800), cmap=plt.cm.gray)
+  plt.show()
   return(CIJ)
+
+def CropMatrix(CIJ, xrange, yrange):
+  NewCIJ = np.zeros([xrange, yrange])
+  for i in range(xrange):
+    for j in range(yrange):
+      NewCIJ[i, j] = CIJ[i, j]
+  return(NewCIJ)
 
 def RewireModularNetwork(CIJ, N, Nm, p):
   """
@@ -15,16 +25,16 @@ def RewireModularNetwork(CIJ, N, Nm, p):
   p = probability of rewiring
   """
   for i in range(N):
-   start = i / Nm   #start of module
-   end = start + Nm #end of module
-   for j in range(start, end):
-     if CIJ[i,j] and rn.random() < p:
-       CIJ[i, j] = 0
-       h = int(np.mod(i + np.ceil(rn.random()*(N-1)) - 1, N))
-       while (h / Nm) == (i / Nm):
-         #h needs to be in another module
-         h = int(np.mod(i + np.ceil(rn.random()*(N-1)) - 1, N))
-       CIJ[i, h] = 1
+    start = (i / Nm) * Nm   #start of module
+    end = start + Nm #end of module
+    for j in range(start, end):
+      if CIJ[i,j] and rn.random() < p:
+        CIJ[i, j] = 0
+        h = rn.randint(N)
+        while (h / Nm) == (i / Nm):
+          #h needs to be in another module
+          h = rn.randint(N)
+        CIJ[i, h] = 1
   return(CIJ)
     
 def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
@@ -42,8 +52,8 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
       targetNode = (i * Nm) + target 
       while CIJ[sourceNode, targetNode]: 
         #Repeat until no connection is found between sourceNode and targetNode
-	    [source, target] = np.random.randint(Nm, size=2)
-	    sourceNode = (i * Nm) + source
+        [source, target] = rn.randint(Nm, size=2)
+        sourceNode = (i * Nm) + source
         targetNode = (i * Nm) + target
       CIJ[sourceNode, targetNode] = 1
     # Set up excitory-to-inhibitory connection // iterating through all the inhibitory neurons
