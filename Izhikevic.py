@@ -1,6 +1,5 @@
 import numpy as np
 import numpy.random as rn
-from NetworkRingLattice import NetworkRingLattice
 
 def Run(p):
   CIJ = IzhikevichModularNetwork(1000, 8, 100, 1000, 200)
@@ -8,15 +7,23 @@ def Run(p):
   return(CIJ)
 
 def RewireModularNetwork(CIJ, N, Nm, p):
+  """
+  Intra-modular connection -> Inter-modular connection
+  CIJ = connectivity matrix
+  N = number of excitory neuron
+  Nm = number of excitory neuron per module
+  p = probability of rewiring
+  """
   for i in range(N):
-   start = i / Nm
-   end = start + Nm
+   start = i / Nm   #start of module
+   end = start + Nm #end of module
    for j in range(start, end):
      if CIJ[i,j] and rn.random() < p:
        CIJ[i, j] = 0
        h = int(np.mod(i + np.ceil(rn.random()*(N-1)) - 1, N))
        while (h / Nm) == (i / Nm):
-	 h = int(np.mod(i + np.ceil(rn.random()*(N-1)) - 1, N))
+         #h needs to be in another module
+         h = int(np.mod(i + np.ceil(rn.random()*(N-1)) - 1, N))
        CIJ[i, h] = 1
   return(CIJ)
     
@@ -33,14 +40,17 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
       [source, target] = rn.randint(Nm, size=2)
       sourceNode = (i * Nm) + source
       targetNode = (i * Nm) + target 
-      while CIJ[sourceNode, targetNode]:
-	[source, target] = np.random.randint(Nm, size=2)
-	sourceNode = (i * Nm) + source
+      while CIJ[sourceNode, targetNode]: 
+        #Repeat until no connection is found between sourceNode and targetNode
+	    [source, target] = np.random.randint(Nm, size=2)
+	    sourceNode = (i * Nm) + source
         targetNode = (i * Nm) + target
       CIJ[sourceNode, targetNode] = 1
     # Set up excitory-to-inhibitory connection // iterating through all the inhibitory neurons
     for k in range(NI/K):
-      targetInhibitory = (i * (NI / K)) + k + 800
+      # Number of excitory neurons + the i module of inhibitory neurons + k
+      targetInhibitory = 800 + (i * (NI / K)) + k
+      # Connect 4 excitory neurons to 1 inhibitory neuron
       startingSource = (i * Nm) + (k * 4)
       CIJ[startingSource, targetInhibitory] = 1
       CIJ[startingSource + 1, targetInhibitory] = 1
@@ -49,37 +59,6 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
       # Set up outgoing inhibitory-to-excitory connection
       for l in range(N):
         CIJ[targetInhibitory, l] = 1
-  return(CIJ)
-
-
-def NetworkWattsStrogatz(N, k, p):
-  """
-  Creates a ring lattice with N nodes and neighbourhood size k, then
-  rewires it according to the Watts-Strogatz procedure with probability p.
-
-  Inputs:
-  N -- Number of nodes
-  k -- Neighbourhood size of the initial ring lattice
-  p -- Rewiring probability
-  """
-
-  # Create a regular string lattice
-  CIJ = NetworkRingLattice(N, k)
-
-  # Loop over all connections and swap each of them with probability p
-  for i in range(N):
-    for j in range(i+1, N):
-      if CIJ[i, j] and rn.random() < p:
-        # We modify connections in both directions (i.e. [i,j] and [j,i])
-        # to maintain network undirectedness (i.e. symmetry).
-        CIJ[i, j] = 0
-        CIJ[j, i] = 0
-        # PEDRO
-        # h = np.mod(i + np.ceil(rn.random()*(N-1)) - 1, N)
-        h = int(np.mod(i + np.ceil(rn.random()*(N-1)) - 1, N))
-        CIJ[i, h] = 1
-        CIJ[h, i] = 1
-
   return(CIJ)
 
 
