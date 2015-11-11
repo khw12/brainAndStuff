@@ -3,13 +3,6 @@ import numpy.random as rn
 import matplotlib.pyplot as plt
 from IzNetwork import IzNetwork
 
-def Run(p):
-  CIJ = IzhikevichModularNetwork(1000, 8, 100, 1000, 200)
-  CIJ = RewireModularNetwork(CIJ, 800, 100, p)
-  plt.matshow(CropMatrix(CIJ, 0, 800, 0, 800), cmap=plt.cm.gray)
-  plt.show()
-  return(CIJ)
-
 def CropMatrix(CIJ, StartX, EndX, StartY, EndY):
   NewCIJ = np.zeros([EndX - StartX, EndY - StartY])
   for i in range(StartX, EndX):
@@ -48,7 +41,7 @@ def RewireModularNetwork(CIJ, N, Nm, p):
 def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
   """
   Set up small world modular network with N nodes, k modules,
-  Nm excitory neuron per module, Nc connections per module, 
+  Nm excitory neuron per module, Nc connections per module,
   NI inhibitory neurons
   """
   CIJ = np.zeros([N, N])
@@ -57,8 +50,8 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
     for j in range(Nc):
       [source, target] = rn.randint(Nm, size=2)
       sourceNode = (i * Nm) + source
-      targetNode = (i * Nm) + target 
-      while CIJ[sourceNode, targetNode]: 
+      targetNode = (i * Nm) + target
+      while CIJ[sourceNode, targetNode]:
         #Repeat until no connection is found between sourceNode and targetNode
         [source, target] = rn.randint(Nm, size=2)
         sourceNode = (i * Nm) + source
@@ -97,8 +90,8 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
     for j in range(NExcitoryLayer):
       network.layer[0].delay[0][i,j] = rn.randint(1,20)
   network.layer[0].factor[1] = np.ones([NExcitoryLayer, NInhibitoryLayer])
-  network.layer[0].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 0, 800))
-  network.layer[0].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 0, 800)) # target neuron->rows, source neuron->columns
+  network.layer[0].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 0, 800), 800, 800)
+  network.layer[0].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 0, 800), 200, 800) # target neuron->rows, source neuron->columns
   for i in range(NExcitoryLayer):
     for j in range(NInhibitoryLayer):
       network.layer[0].S[1][i,j] = network.layer[0].S[1][i,j] * rn.random()
@@ -114,8 +107,8 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[1].factor[1] = 1
   network.layer[1].factor[0] = np.ones([NInhibitoryLayer, NExcitoryLayer])
   network.layer[1].factor[1] = np.ones([NInhibitoryLayer, NInhibitoryLayer])
-  network.layer[1].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 800, 1000))
-  network.layer[1].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 800, 1000))
+  network.layer[1].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 800, 1000), 800, 200)
+  network.layer[1].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 800, 1000), 200, 200)
   for i in range(NInhibitoryLayer):
     for j in range(NExcitoryLayer):
       network.layer[1].S[0][i,j] = network.layer[1].S[0][i,j] * rn.random() * -1
