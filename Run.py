@@ -16,8 +16,8 @@ p = 0
 
 CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
 CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
-plt.matshow(CropMatrix(CIJ, 0, NUM_EXCITORY, 0, NUM_EXCITORY), cmap=plt.cm.gray)
-#plt.show()
+plt.matshow(CropMatrix(CIJ, 0, NUM_NEURONS, 0, NUM_NEURONS), cmap=plt.cm.gray)
+plt.show()
 
 net = ConnectIzhikevichNetworkLayers(CIJ, NUM_EXCITORY, NUM_INHIBITORY)
 
