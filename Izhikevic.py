@@ -83,6 +83,8 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[0].b = 0.20 * np.ones(NExcitoryLayer)
   network.layer[0].c = -65 + 15*(rand**2)
   network.layer[0].d = 8 - 6*(rand**2)
+  
+  ## Factor and delay
   network.layer[0].factor[0] = 17
   network.layer[0].factor[1] = 2
   network.layer[0].delay[0] = np.ones([NExcitoryLayer, NExcitoryLayer])
@@ -90,13 +92,18 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
     for j in range(NExcitoryLayer):
       network.layer[0].delay[0][i,j] = rn.randint(1,20)
   network.layer[0].delay[1] = np.ones([NExcitoryLayer, NInhibitoryLayer])
-  network.layer[0].factor[1] = np.ones([NExcitoryLayer, NInhibitoryLayer])
+ 
+  ## Connectivity matrix (synaptic weights)
+  # layer[i].S[j] is the connectivity matrix from layer j to layer i
+  # S(i,j) is the strength of the connection from neuron j to neuron i
   network.layer[0].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 0, 800), 800, 800)
   network.layer[0].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 0, 800), 200, 800) # target neuron->rows, source neuron->columns
+  #From inhibitory to excitory
   for i in range(NExcitoryLayer):
     for j in range(NInhibitoryLayer):
-      network.layer[0].S[1][i,j] = network.layer[0].S[1][i,j] * rn.random()
-
+      network.layer[0].S[1][i,j] = network.layer[0].S[1][i,j] * rn.random() * -1
+      
+      
   # Set neuron parameters for inhibitory layer
   rand = rn.rand(NInhibitoryLayer)
   network.layer[1].N = NInhibitoryLayer
@@ -104,17 +111,22 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[1].b = 0.25 * np.ones(NInhibitoryLayer)
   network.layer[1].c = -65 + 15*(rand**2)
   network.layer[1].d = 2 - 6*(rand**2)
+  
+  ## Factor and delay
   network.layer[1].factor[0] = 50
   network.layer[1].factor[1] = 1
-  network.layer[1].factor[0] = np.ones([NInhibitoryLayer, NExcitoryLayer])
-  network.layer[1].factor[1] = np.ones([NInhibitoryLayer, NInhibitoryLayer])
   network.layer[1].delay[0] = np.ones([NInhibitoryLayer, NExcitoryLayer])
   network.layer[1].delay[1] = np.ones([NInhibitoryLayer, NInhibitoryLayer])
+ 
+      
+  ## Connectivity matrix (synaptic weights)
+  # layer[i].S[j] is the connectivity matrix from layer j to layer i
+  # S(i,j) is the strength of the connection from neuron j to neuron i
   network.layer[1].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 800, 1000), 800, 200)
   network.layer[1].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 800, 1000), 200, 200)
   for i in range(NInhibitoryLayer):
     for j in range(NExcitoryLayer):
-      network.layer[1].S[0][i,j] = network.layer[1].S[0][i,j] * rn.random() * -1
+      network.layer[1].S[0][i,j] = network.layer[1].S[0][i,j] * rn.random()
   for i in range(NInhibitoryLayer):
     for j in range(NInhibitoryLayer):
       network.layer[1].S[1][i,j] = network.layer[1].S[1][i,j] * rn.random() * -1
