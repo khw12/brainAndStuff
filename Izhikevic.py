@@ -89,6 +89,7 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   for i in range(NExcitoryLayer):
     for j in range(NExcitoryLayer):
       network.layer[0].delay[0][i,j] = rn.randint(1,20)
+  network.layer[0].delay[1] = np.ones([NExcitoryLayer, NInhibitoryLayer])
   network.layer[0].factor[1] = np.ones([NExcitoryLayer, NInhibitoryLayer])
   network.layer[0].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 0, 800), 800, 800)
   network.layer[0].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 0, 800), 200, 800) # target neuron->rows, source neuron->columns
@@ -107,6 +108,8 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[1].factor[1] = 1
   network.layer[1].factor[0] = np.ones([NInhibitoryLayer, NExcitoryLayer])
   network.layer[1].factor[1] = np.ones([NInhibitoryLayer, NInhibitoryLayer])
+  network.layer[1].delay[0] = np.ones([NInhibitoryLayer, NExcitoryLayer])
+  network.layer[1].delay[1] = np.ones([NInhibitoryLayer, NInhibitoryLayer])
   network.layer[1].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 800, 1000), 800, 200)
   network.layer[1].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 800, 1000), 200, 200)
   for i in range(NInhibitoryLayer):
