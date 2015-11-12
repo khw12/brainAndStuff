@@ -98,6 +98,11 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   # S(i,j) is the strength of the connection from neuron j to neuron i
   network.layer[0].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 0, 800), 800, 800)
   network.layer[0].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 0, 800), 200, 800) # target neuron->rows, source neuron->columns
+  #plt.matshow(network.layer[0].S[0], cmap=plt.cm.gray)
+  #plt.show()
+  #plt.matshow(network.layer[0].S[1], cmap=plt.cm.gray)
+  #plt.show()
+  
   #From inhibitory to excitory
   for i in range(NExcitoryLayer):
     for j in range(NInhibitoryLayer):
@@ -118,12 +123,17 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[1].delay[0] = np.ones([NInhibitoryLayer, NExcitoryLayer])
   network.layer[1].delay[1] = np.ones([NInhibitoryLayer, NInhibitoryLayer])
  
-      
   ## Connectivity matrix (synaptic weights)
   # layer[i].S[j] is the connectivity matrix from layer j to layer i
   # S(i,j) is the strength of the connection from neuron j to neuron i
   network.layer[1].S[0] = FlipMatrix(CropMatrix(CIJ, 0, 800, 800, 1000), 800, 200)
   network.layer[1].S[1] = FlipMatrix(CropMatrix(CIJ, 800, 1000, 800, 1000), 200, 200)
+  
+  #plt.matshow(network.layer[1].S[0], cmap=plt.cm.gray)
+  #plt.show()
+  #plt.matshow(network.layer[1].S[1], cmap=plt.cm.gray)
+  #plt.show()
+  
   for i in range(NInhibitoryLayer):
     for j in range(NExcitoryLayer):
       network.layer[1].S[0][i,j] = network.layer[1].S[0][i,j] * rn.random()

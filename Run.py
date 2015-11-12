@@ -10,9 +10,9 @@ NUM_INHIBITORY = 200
 NUM_CONNECTIONS_E_to_E = 1000
 NUM_CONNECTIONS_E_to_I = 4
 
-T  = 500  # Simulation time
-Ib = 5    # Base current
-p = 0
+T  = 1000  # Simulation time
+Ib = 15    # Base current
+p = 0.5
 
 CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
 CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
@@ -35,10 +35,18 @@ u2 = np.zeros([T, NUM_INHIBITORY])
 ## SIMULATE
 for t in xrange(T):
 
-    # Deliver a constant base current to layer 1
-    net.layer[0].I = Ib * np.ones(NUM_EXCITORY)
+    net.layer[0].I = np.zeros(NUM_EXCITORY)
     net.layer[1].I = np.zeros(NUM_INHIBITORY)
-
+    
+    # Background firing
+    for i in range(NUM_EXCITORY):
+        if np.random.poisson(0.1) > 0:
+            net.layer[0].I[i] = Ib
+        
+    for i in range(NUM_INHIBITORY):
+        if np.random.poisson(0.1) > 0:
+            net.layer[1].I[i] = Ib
+            
     net.Update(t)
 
     v1[t] = net.layer[0].v
