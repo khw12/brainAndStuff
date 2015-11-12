@@ -12,7 +12,7 @@ NUM_CONNECTIONS_E_to_I = 4
 
 T  = 1000  # Simulation time
 Ib = 15    # Base current
-p = 0.5
+p = 0
 
 CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
 CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
