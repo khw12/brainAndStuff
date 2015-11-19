@@ -2,6 +2,7 @@ import numpy as np
 import numpy.random as rn
 from Izhikevic import IzhikevichModularNetwork, RewireModularNetwork, CropMatrix, ConnectIzhikevichNetworkLayers,CompareMatrix
 import matplotlib.pyplot as plt
+import copy
 
 NUM_NEURONS = 1000
 NUM_MODULES = 8
@@ -13,23 +14,16 @@ NUM_CONNECTIONS_E_to_I = 4
 
 T  = 1000  # Simulation time
 Ib = 15    # Base current
-p = 0.01   # Rewiring probility
-
-
-
-
-
+p = 0      # Rewiring probility
 
 CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
-import copy
+
 CIJ_initial = copy.deepcopy(CIJ) 
 CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
 
-
+#plt.matshow(CIJ_initial, cmap=plt.cm.gray)
 plt.matshow(CIJ, cmap=plt.cm.gray)
-# plt.matshow(CIJ_initial, cmap=plt.cm.gray)
-# plt.show()
-
+plt.show()
 
 
 net = ConnectIzhikevichNetworkLayers(CIJ, NUM_EXCITORY, NUM_INHIBITORY)
