@@ -101,18 +101,13 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   ## Factor and delay
   network.layer[0].factor[0] = 17
   network.layer[0].factor[1] = 2
-  network.layer[0].delay[0] = np.ones([NExcitoryLayer, NExcitoryLayer])
-
-  # for i in range(NExcitoryLayer):
-  #   for j in range(NExcitoryLayer):
-  #     network.layer[0].delay[0][i,j] = rn.randint(1,20)
-  network.layer[0].delay[0] = rn.randint(1,20,size=[NExcitoryLayer,NExcitoryLayer])
+  network.layer[0].delay[0] = rn.randint(1,21,size=[NExcitoryLayer,NExcitoryLayer])
+  print network.layer[0].delay[0]
   network.layer[0].delay[1] = np.ones([NExcitoryLayer, NInhibitoryLayer])
  
   ## Connectivity matrix (synaptic weights)
   # layer[i].S[j] is the connectivity matrix from layer j to layer i
   # S(i,j) is the strength of the connection from neuron j to neuron i
-
   # excitory-to-excitory synaptic weights
   network.layer[0].S[0] = FlipMatrix(CropMatrix(CIJ, 0, NExcitoryLayer,
      0, NExcitoryLayer), NExcitoryLayer, NExcitoryLayer)
@@ -120,15 +115,7 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[0].S[1] = FlipMatrix(CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons,
      0, NExcitoryLayer), NTotalNeurons -  NExcitoryLayer, NExcitoryLayer) # target neuron->rows, source neuron->columns
   
-  # plt.matshow(network.layer[0].S[0], cmap=plt.cm.gray)
-  # plt.show()
-  # plt.matshow(network.layer[0].S[1], cmap=plt.cm.gray)
-  # plt.show()
-  
   # inhibtory-to-excitory weights
-  # for i in range(NExcitoryLayer):
-  #   for j in range(NInhibitoryLayer):
-  #     network.layer[0].S[1][i,j] = network.layer[0].S[1][i,j] * rn.random() * -1
   rand_array = -1 * rn.random(NExcitoryLayer*NInhibitoryLayer).reshape(NExcitoryLayer,NInhibitoryLayer)
   network.layer[0].S[1] = np.multiply(network.layer[0].S[1],rand_array)
 
@@ -156,23 +143,11 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[1].S[1] = FlipMatrix(CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons,
      NExcitoryLayer, NTotalNeurons), NTotalNeurons - NExcitoryLayer, NTotalNeurons - NExcitoryLayer)
   
-  # plt.matshow(network.layer[1].S[0], cmap=plt.cm.gray)
-  # plt.show()
-  # plt.matshow(network.layer[1].S[1], cmap=plt.cm.gray)
-  # plt.show()
   # excitory-to-inhibtory weights
-  # for i in range(NInhibitoryLayer):
-  #   for j in range(NExcitoryLayer):
-  #     network.layer[1].S[0][i,j] = network.layer[1].S[0][i,j] * rn.random()
   rand_array = rn.random(NExcitoryLayer*NInhibitoryLayer).reshape(NInhibitoryLayer,NExcitoryLayer)
   network.layer[1].S[0] = np.multiply(network.layer[1].S[0],rand_array)
 
-
-
   # inhibtory-to-inhibtory weights
-  # for i in range(NInhibitoryLayer):
-  #   for j in range(NInhibitoryLayer):
-  #     network.layer[1].S[1][i,j] = network.layer[1].S[1][i,j] * rn.random() * -1
   rand_array = -1 * rn.random(NInhibitoryLayer*NInhibitoryLayer).reshape(NInhibitoryLayer,NInhibitoryLayer)
   network.layer[1].S[1] = np.multiply(network.layer[1].S[1],rand_array)
   return(network)
