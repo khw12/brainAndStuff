@@ -102,7 +102,6 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[0].factor[0] = 17
   network.layer[0].factor[1] = 2
   network.layer[0].delay[0] = rn.randint(1,21,size=[NExcitoryLayer,NExcitoryLayer])
-  print network.layer[0].delay[0]
   network.layer[0].delay[1] = np.ones([NExcitoryLayer, NInhibitoryLayer])
  
   ## Connectivity matrix (synaptic weights)
