@@ -4,7 +4,12 @@ from Izhikevic import IzhikevichModularNetwork, RewireModularNetwork, CropMatrix
 import matplotlib.pyplot as plt
 from jpype import *
 import atexit
+import os
 
+DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q2')
+if not os.path.exists(DIR_PATH):
+    os.makedirs(DIR_PATH)
+    
 NUM_NEURONS = 1000
 NUM_MODULES = 8
 NUM_EXCITORY = 800
@@ -111,8 +116,8 @@ for i in range(1):
     res.append([p, result])
 
 ## Raster plots of firings
+fig1 = plt.figure()
 if firings1.size != 0:
-    plt.figure()
     plt.subplot(211)
     plt.scatter(firings1[:, 0], firings1[:, 1] + 1, marker='.')
     plt.xlim(0, T)
@@ -128,23 +133,30 @@ if firings2.size != 0:
     plt.ylim(0, NUM_INHIBITORY+1)
     plt.xlabel('Time (ms)')
     plt.title('Population 2 firings')
+path = os.path.join(DIR_PATH, 'firings.svg')
+fig1.savefig(path)
 
 ## Mean firing rate
+fig2 = plt.figure()
 if firings1.size != 0:
-    plt.figure()
     plt.plot(mean_time, mean_firings)
     plt.ylabel('Mean firing rate')
     plt.title('Mean firing rate')
+path = os.path.join(DIR_PATH, 'mean_firing.svg')
+fig2.savefig(path)
 
 ## Multi-information/Integration
 I = np.array(res)
+fig3 = plt.figure()
 if len(I) != 0:
-    plt.figure()
     plt.scatter(I[:, 0], I[:, 1], marker='.')
     plt.ylim(0, 5)
     plt.ylabel('Integration(bits)')
     plt.xlim(0, 1)
     plt.xlabel('Rewiring probability p')
     plt.title('Integration')
+path = os.path.join(DIR_PATH, 'integration.svg')
+fig3.savefig(path)
+
 plt.show()
 shutdownJVM()

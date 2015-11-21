@@ -3,7 +3,8 @@ import numpy.random as rn
 from Izhikevic import IzhikevichModularNetwork, RewireModularNetwork, CropMatrix, ConnectIzhikevichNetworkLayers,CompareMatrix
 import matplotlib.pyplot as plt
 import copy
-
+import os
+    
 NUM_NEURONS = 1000
 NUM_MODULES = 8
 NUM_EXCITORY = 800
@@ -16,14 +17,21 @@ T  = 1000  # Simulation time
 Ib = 15    # Base current
 p = 0      # Rewiring probility
 
+DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q1', str(p))
+if not os.path.exists(DIR_PATH):
+    os.makedirs(DIR_PATH)
+    
 CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
 
 CIJ_initial = copy.deepcopy(CIJ) 
 CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
 
 #plt.matshow(CIJ_initial, cmap=plt.cm.gray)
-plt.matshow(CIJ, cmap=plt.cm.gray)
+figure = plt.matshow(CIJ, cmap=plt.cm.gray)
+path = os.path.join(DIR_PATH, 'connectivity_matrix.svg')
+plt.savefig(path)
 plt.show()
+
 
 
 net = ConnectIzhikevichNetworkLayers(CIJ, NUM_EXCITORY, NUM_INHIBITORY)
@@ -90,7 +98,7 @@ mean_firings /= 50
 
 
 ## Plot membrane potentials
-plt.figure(1)
+fig = plt.figure(1)
 plt.subplot(211)
 plt.plot(range(T), v1)
 plt.title('Population 1 membrane potentials')
@@ -104,6 +112,8 @@ plt.ylabel('Voltage (mV)')
 plt.ylim([-90, 40])
 plt.xlabel('Time (ms)')
 
+path = os.path.join(DIR_PATH, 'membrane_potential.svg')
+fig.savefig(path)
 ## Plot recovery variable
 plt.figure(2)
 plt.subplot(211)
@@ -118,8 +128,8 @@ plt.ylabel('Voltage (mV)')
 plt.xlabel('Time (ms)')
 
 ## Raster plots of firings
+figure3 = plt.figure(3)
 if firings1.size != 0:
-    plt.figure(3)
     plt.subplot(211)
     plt.scatter(firings1[:, 0], firings1[:, 1] + 1, marker='.')
     plt.xlim(0, T)
@@ -136,13 +146,18 @@ if firings2.size != 0:
     plt.xlabel('Time (ms)')
     plt.title('Population 2 firings')
 
+path = os.path.join(DIR_PATH, 'firings.svg')
+fig.savefig(path)
+
 ## Mean firing rate
+figure4 = plt.figure(4)
 if firings1.size != 0:
-    plt.figure(4)
     plt.plot(range(0, 1000, 20), mean_firings)
     plt.ylabel('Mean firing rate')
     plt.title('Mean firing rate')
 
+path = os.path.join(DIR_PATH, 'mean_firing.svg')
+figure4.savefig(path)
 
 plt.show()
 
