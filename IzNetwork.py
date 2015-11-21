@@ -1,5 +1,5 @@
 import numpy as np
-
+import pdb
 
 class IzNetwork:
   """
@@ -37,6 +37,7 @@ class IzNetwork:
     """
     for lr in xrange(self.Nlayers):
       self.NeuronUpdate(lr, t)
+      pdb.set_trace()
 
   def NeuronUpdate(self, i, t):
     """
