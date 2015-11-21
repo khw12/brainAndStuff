@@ -8,7 +8,7 @@ def CompareMatrix(MatA,MatB,NCol,NRow):
   for i in range(NRow):
     for j in range(NCol):
       if MatA[i,j] != MatB[i,j]:
-        print "WTF"
+        print i, j
 
 def CropMatrix(CIJ, StartX, EndX, StartY, EndY):
   NewCIJ = np.zeros([EndX - StartX, EndY - StartY])
@@ -34,18 +34,17 @@ def RewireModularNetwork(CIJ, N, Nm, p):
   p = probability of rewiring
   """
   for i in range(N):
-    module = (i / Nm)
-    start = module * Nm   #start of module
-    end = start + Nm #end of module
+    module = i/Nm
+    start = module * Nm
+    end = (module+1) * Nm
     for j in range(start, end):
-      if (CIJ[i,j]) and (rn.random() < p):
-        CIJ[i, j] = 0
-        h = rn.randint(N)
-        while (h / Nm) == module:
-          #h needs to be in another module # TODO: does it have to be?
-          h = rn.randint(N)
-        CIJ[i, h] = 1
-  return(CIJ)
+        if(CIJ[i,j] and (rn.random() < p)):
+            CIJ[i,j] = 0
+            k = rn.randint(N)
+            while(k/Nm == module or CIJ[i,k] == 1):
+                k = rn.randint(N)
+            CIJ[i,k] = 1
+  return CIJ
     
 def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
   """
@@ -60,28 +59,27 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
   for i in range(K):
     # Set up excitory-to-excitory connection per module
     for j in range(Nc):
-      [source, target] = rn.randint(Nm, size=2) # TODO: this allows self connection correct?
+      [source, target] = rn.randint(Nm, size=2)
       sourceNode = (i * Nm) + source
       targetNode = (i * Nm) + target
       while (CIJ[sourceNode, targetNode] == 1) or (source == target):
         #Repeat until no connection is found between sourceNode and targetNode
-        [source, target] = rn.randint(Nm, size=2) # TODO: this allows self connection correct?
+        [source, target] = rn.randint(Nm, size=2)
         sourceNode = (i * Nm) + source
         targetNode = (i * Nm) + target
       CIJ[sourceNode, targetNode] = 1
-    # Set up excitory-to-inhibitory connection // iterating through all the inhibitory neurons
-    for k in range(num_hidden_module):
-      # Number of excitory neurons + the i module of inhibitory neurons + k
-      targetInhibitory = num_excitory_neuron + (i * (num_hidden_module)) + k
-      # Connect 4 excitory neurons to 1 inhibitory neuron # TODO: why is this the one to connect?
-      startingSource = (i * Nm) + (k * 4) 
-      CIJ[startingSource, targetInhibitory] = 1
-      CIJ[startingSource + 1, targetInhibitory] = 1
-      CIJ[startingSource + 2, targetInhibitory] = 1
-      CIJ[startingSource + 3, targetInhibitory] = 1
-      # Set up outgoing inhibitory-to-excitory connection
-      for l in range(N):
-        CIJ[targetInhibitory, l] = 1
+      
+  # Set up excitory-to-inhibitory connection
+#  for i in range(num_excitory_neuron):
+#      inhib = i/4
+#      CIJ[i, num_excitory_neuron+inhib] = 1
+#      connection = connection + 1
+      
+  # Set up outgoing inhibitory-to-excitory connection
+  for i in range (Nm*K, N):
+      CIJ[i, :] = 1
+      CIJ[i, i] = 0
+  
   return(CIJ)
 
 def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
