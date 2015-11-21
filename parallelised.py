@@ -17,6 +17,10 @@ T  = 1000  # Simulation time
 Ib = 15    # Base current
 # p = 0      # Rewiring probility
 
+mean_firings_res = []
+
+
+
 def run_simulation(p):
 	"""
 	Run a simulation with p as rewiring probability  
@@ -110,14 +114,12 @@ def run_simulation(p):
 	    plt.title('Mean firing rate')
 
 	plt.show()
-
+	return mean_firings
 
 from multiprocessing import Pool
 if __name__ == '__main__':
     p = Pool(3)
-    p.map(run_simulation, [0,0.1,0.2])
+    mean_firings_res = p.map(run_simulation, [0,0.1,0.2])
 
-
-
-
+# print mean_firings_res
 
