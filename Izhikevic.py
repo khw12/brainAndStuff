@@ -73,8 +73,7 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
 #  for i in range(num_excitory_neuron):
 #      inhib = i/4
 #      CIJ[i, num_excitory_neuron+inhib] = 1
-#      connection = connection + 1
-      
+#      
   # Set up outgoing inhibitory-to-excitory connection
   for i in range (Nm*K, N):
       CIJ[i, :] = 1
@@ -110,8 +109,7 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
      0, NExcitoryLayer), NExcitoryLayer, NExcitoryLayer)
   # inhibtory-to-excitory synaptic weights
   network.layer[0].S[1] = FlipMatrix(CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons,
-     0, NExcitoryLayer), NTotalNeurons -  NExcitoryLayer, NExcitoryLayer) # target neuron->rows, source neuron->columns
-  
+     0, NExcitoryLayer), NInhibitoryLayer, NExcitoryLayer)
   # inhibtory-to-excitory weights
   rand_array = -1 * rn.random(NExcitoryLayer*NInhibitoryLayer).reshape(NExcitoryLayer,NInhibitoryLayer)
   network.layer[0].S[1] = np.multiply(network.layer[0].S[1],rand_array)
@@ -135,11 +133,10 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   # S(i,j) is the strength of the connection from neuron j to neuron i
   # excitory-to-inhibtory synaptic weights
   network.layer[1].S[0] = FlipMatrix(CropMatrix(CIJ, 0, NExcitoryLayer,
-     NExcitoryLayer, NTotalNeurons), NExcitoryLayer, NTotalNeurons - NExcitoryLayer)
+     NExcitoryLayer, NTotalNeurons), NExcitoryLayer, NInhibitoryLayer)
   # inhibtory-to-excitory synaptic weights
   network.layer[1].S[1] = FlipMatrix(CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons,
      NExcitoryLayer, NTotalNeurons), NTotalNeurons - NExcitoryLayer, NTotalNeurons - NExcitoryLayer)
-  
   # excitory-to-inhibtory weights
   rand_array = rn.random(NExcitoryLayer*NInhibitoryLayer).reshape(NInhibitoryLayer,NExcitoryLayer)
   network.layer[1].S[0] = np.multiply(network.layer[1].S[0],rand_array)
