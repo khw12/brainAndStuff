@@ -18,13 +18,6 @@ def CropMatrix(CIJ, StartX, EndX, StartY, EndY):
       NewCIJ[new_i, j - StartY] = CIJ[i, j]
   return(NewCIJ)
 
-def FlipMatrix(CIJ, X, Y):
-  NewCIJ = np.zeros([Y, X])
-  for i in range(X):
-    for j in range(Y):
-      NewCIJ[j, i] = CIJ[i, j]
-  return(NewCIJ)
-
 def RewireModularNetwork(CIJ, N, Nm, p):
   """
   Intra-modular connection -> Inter-modular connection
@@ -38,12 +31,12 @@ def RewireModularNetwork(CIJ, N, Nm, p):
     start = module * Nm
     end = (module+1) * Nm
     for j in range(start, end):
-        if(CIJ[i,j] and (rn.random() < p)):
-            CIJ[i,j] = 0
+        if(CIJ[j,i] and (rn.random() < p)):
+            CIJ[j,i] = 0
             k = rn.randint(N)
-            while(k/Nm == module or CIJ[i,k] == 1):
+            while(k/Nm == module or CIJ[k,i] == 1):
                 k = rn.randint(N)
-            CIJ[i,k] = 1
+            CIJ[k,i] = 1
   return CIJ
     
 def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
@@ -62,22 +55,22 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
       [source, target] = rn.randint(Nm, size=2)
       sourceNode = (i * Nm) + source
       targetNode = (i * Nm) + target
-      while (CIJ[sourceNode, targetNode] == 1) or (source == target):
+      while (CIJ[targetNode, sourceNode] == 1) or (source == target):
         #Repeat until no connection is found between sourceNode and targetNode
         [source, target] = rn.randint(Nm, size=2)
         sourceNode = (i * Nm) + source
         targetNode = (i * Nm) + target
-      CIJ[sourceNode, targetNode] = 1
+      CIJ[targetNode, sourceNode] = 1
       
   # Set up excitory-to-inhibitory connection
-#  for i in range(num_excitory_neuron):
-#      inhib = i/4
-#      CIJ[i, num_excitory_neuron+inhib] = 1
-#      
+  for i in range(num_excitory_neuron):
+    inhib = i/4
+    CIJ[num_excitory_neuron+inhib, i] = 1
+     
   # Set up outgoing inhibitory-to-excitory connection
   for i in range (Nm*K, N):
-      CIJ[i, :] = 1
-      CIJ[i, i] = 0
+      CIJ[:, i] = 1
+      #CIJ[i, i] = 0
   
   return(CIJ)
 
@@ -105,13 +98,11 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   # layer[i].S[j] is the connectivity matrix from layer j to layer i
   # S(i,j) is the strength of the connection from neuron j to neuron i
   # excitory-to-excitory synaptic weights
-  network.layer[0].S[0] = FlipMatrix(CropMatrix(CIJ, 0, NExcitoryLayer,
-     0, NExcitoryLayer), NExcitoryLayer, NExcitoryLayer)
+  network.layer[0].S[0] = CropMatrix(CIJ, 0, NExcitoryLayer, 0, NExcitoryLayer)
   # inhibtory-to-excitory synaptic weights
-  network.layer[0].S[1] = FlipMatrix(CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons,
-     0, NExcitoryLayer), NInhibitoryLayer, NExcitoryLayer)
+  network.layer[0].S[1] = CropMatrix(CIJ, 0, NExcitoryLayer, NExcitoryLayer, NTotalNeurons)
   # inhibtory-to-excitory weights
-  rand_array = -1 * rn.random(NExcitoryLayer*NInhibitoryLayer).reshape(NExcitoryLayer,NInhibitoryLayer)
+  rand_array = -1 * rn.random(NInhibitoryLayer*NExcitoryLayer).reshape(NExcitoryLayer,NInhibitoryLayer)
   network.layer[0].S[1] = np.multiply(network.layer[0].S[1],rand_array)
 
   # Set neuron parameters for inhibitory layer
@@ -132,13 +123,11 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   # layer[i].S[j] is the connectivity matrix from layer j to layer i
   # S(i,j) is the strength of the connection from neuron j to neuron i
   # excitory-to-inhibtory synaptic weights
-  network.layer[1].S[0] = FlipMatrix(CropMatrix(CIJ, 0, NExcitoryLayer,
-     NExcitoryLayer, NTotalNeurons), NExcitoryLayer, NInhibitoryLayer)
+  network.layer[1].S[0] = CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons, 0, NExcitoryLayer)
   # inhibtory-to-excitory synaptic weights
-  network.layer[1].S[1] = FlipMatrix(CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons,
-     NExcitoryLayer, NTotalNeurons), NTotalNeurons - NExcitoryLayer, NTotalNeurons - NExcitoryLayer)
+  network.layer[1].S[1] = CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons, NExcitoryLayer, NTotalNeurons)
   # excitory-to-inhibtory weights
-  rand_array = rn.random(NExcitoryLayer*NInhibitoryLayer).reshape(NInhibitoryLayer,NExcitoryLayer)
+  rand_array = rn.random(NInhibitoryLayer*NExcitoryLayer).reshape(NInhibitoryLayer,NExcitoryLayer)
   network.layer[1].S[0] = np.multiply(network.layer[1].S[0],rand_array)
 
   # inhibtory-to-inhibtory weights
