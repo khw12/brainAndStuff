@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.random as rn
-from Izhikevic import IzhikevichModularNetwork, RewireModularNetwork, CropMatrix, ConnectIzhikevichNetworkLayers,CompareMatrix
+from Izhikevic import IzhikevichModularNetwork, RewireModularNetwork, ConnectIzhikevichNetworkLayers,CompareMatrix
 import matplotlib.pyplot as plt
 from jpype import *
 import atexit

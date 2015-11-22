@@ -1,6 +1,6 @@
 import numpy as np
 import numpy.random as rn
-from Izhikevic import IzhikevichModularNetwork, RewireModularNetwork, CropMatrix, ConnectIzhikevichNetworkLayers,CompareMatrix
+from Izhikevic import IzhikevichModularNetwork, RewireModularNetwork, ConnectIzhikevichNetworkLayers,CompareMatrix
 import matplotlib.pyplot as plt
 import copy
 import os
@@ -27,10 +27,14 @@ CIJ_initial = copy.deepcopy(CIJ)
 CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
 
 #plt.matshow(CIJ_initial, cmap=plt.cm.gray)
-figure = plt.matshow(CIJ, cmap=plt.cm.gray)
-path = os.path.join(DIR_PATH, 'connectivity_matrix.svg')
-plt.savefig(path)
+figure = plt.matshow(CIJ[0], cmap=plt.cm.gray)
+figure = plt.matshow(CIJ[1], cmap=plt.cm.gray)
+figure = plt.matshow(CIJ[2], cmap=plt.cm.gray)
+figure = plt.matshow(CIJ[3], cmap=plt.cm.gray)
 plt.show()
+#path = os.path.join(DIR_PATH, 'connectivity_matrix.svg')
+#plt.savefig(path)
+#plt.show()
 
 
 

@@ -10,14 +10,6 @@ def CompareMatrix(MatA,MatB,NCol,NRow):
       if MatA[i,j] != MatB[i,j]:
         print i, j
 
-def CropMatrix(CIJ, StartX, EndX, StartY, EndY):
-  NewCIJ = np.zeros([EndX - StartX, EndY - StartY])
-  for i in range(StartX, EndX):
-    new_i = i - StartX
-    for j in range(StartY, EndY):
-      NewCIJ[new_i, j - StartY] = CIJ[i, j]
-  return(NewCIJ)
-
 def RewireModularNetwork(CIJ, N, Nm, p):
   """
   Intra-modular connection -> Inter-modular connection
@@ -31,12 +23,12 @@ def RewireModularNetwork(CIJ, N, Nm, p):
     start = module * Nm
     end = (module+1) * Nm
     for j in range(start, end):
-        if(CIJ[j,i] and (rn.random() < p)):
-            CIJ[j,i] = 0
+        if(CIJ[0][j,i] and (rn.random() < p)):
+            CIJ[0][j,i] = 0
             k = rn.randint(N)
-            while(k/Nm == module or CIJ[k,i] == 1):
+            while(k/Nm == module or CIJ[0][k,i] == 1):
                 k = rn.randint(N)
-            CIJ[k,i] = 1
+            CIJ[0][k,i] = 1
   return CIJ
     
 def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
@@ -45,7 +37,12 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
   Nm excitory neuron per module, Nc connections per module,
   NI inhibitory neurons
   """
-  CIJ = np.zeros([N, N])
+  EE = np.zeros([Nm * K, Nm * K]) # E-to-E
+  IE = np.zeros([Nm * K, NI]) # I-to-E
+  EI = np.zeros([NI, Nm * K]) # E-to-I
+  II = np.zeros([NI, NI]) # I-to-I
+  CIJ = np.array([EE, IE, EI, II])
+
   num_hidden_module = NI/K
   num_excitory_neuron = Nm*K
 
@@ -55,21 +52,22 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
       [source, target] = rn.randint(Nm, size=2)
       sourceNode = (i * Nm) + source
       targetNode = (i * Nm) + target
-      while (CIJ[targetNode, sourceNode] == 1) or (source == target):
+      while (CIJ[0][targetNode, sourceNode] == 1) or (source == target):
         #Repeat until no connection is found between sourceNode and targetNode
         [source, target] = rn.randint(Nm, size=2)
         sourceNode = (i * Nm) + source
         targetNode = (i * Nm) + target
-      CIJ[targetNode, sourceNode] = 1
+      CIJ[0][targetNode, sourceNode] = 1
       
   # Set up excitory-to-inhibitory connection
   for i in range(num_excitory_neuron):
     inhib = i/4
-    CIJ[num_excitory_neuron+inhib, i] = 1
+    CIJ[2][inhib, i] = 1
      
   # Set up outgoing inhibitory-to-excitory connection
-  for i in range (Nm*K, N):
-      CIJ[:, i] = 1
+  for i in range (NI):
+      CIJ[1][:, i] = 1
+      CIJ[3][:, i] = 1
       #CIJ[i, i] = 0
   
   return(CIJ)
@@ -98,9 +96,9 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   # layer[i].S[j] is the connectivity matrix from layer j to layer i
   # S(i,j) is the strength of the connection from neuron j to neuron i
   # excitory-to-excitory synaptic weights
-  network.layer[0].S[0] = CropMatrix(CIJ, 0, NExcitoryLayer, 0, NExcitoryLayer)
+  network.layer[0].S[0] = CIJ[0]
   # inhibtory-to-excitory synaptic weights
-  network.layer[0].S[1] = CropMatrix(CIJ, 0, NExcitoryLayer, NExcitoryLayer, NTotalNeurons)
+  network.layer[0].S[1] = CIJ[1]
   # inhibtory-to-excitory weights
   rand_array = -1 * rn.random(NInhibitoryLayer*NExcitoryLayer).reshape(NExcitoryLayer,NInhibitoryLayer)
   network.layer[0].S[1] = np.multiply(network.layer[0].S[1],rand_array)
@@ -123,9 +121,9 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   # layer[i].S[j] is the connectivity matrix from layer j to layer i
   # S(i,j) is the strength of the connection from neuron j to neuron i
   # excitory-to-inhibtory synaptic weights
-  network.layer[1].S[0] = CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons, 0, NExcitoryLayer)
+  network.layer[1].S[0] = CIJ[2]
   # inhibtory-to-excitory synaptic weights
-  network.layer[1].S[1] = CropMatrix(CIJ, NExcitoryLayer, NTotalNeurons, NExcitoryLayer, NTotalNeurons)
+  network.layer[1].S[1] = CIJ[3]
   # excitory-to-inhibtory weights
   rand_array = rn.random(NInhibitoryLayer*NExcitoryLayer).reshape(NInhibitoryLayer,NExcitoryLayer)
   network.layer[1].S[0] = np.multiply(network.layer[1].S[0],rand_array)
