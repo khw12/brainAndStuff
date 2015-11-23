@@ -3,7 +3,6 @@ import numpy.random as rn
 from Izhikevic import IzhikevichModularNetwork, GenerateNetwork, RewireModularNetwork, ConnectIzhikevichNetworkLayers,CompareMatrix
 from Run import RunSimulation
 import matplotlib.pyplot as plt
-import copy
 import os
     
 NUM_NEURONS = 1000
@@ -18,23 +17,22 @@ T  = 1000  # Simulation time
 Ib = 15    # Base current
 p = 0      # Rewiring probility
 
+
+# fig save path
 DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q1', str(p))
 if not os.path.exists(DIR_PATH):
   os.makedirs(DIR_PATH)
     
 CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
 net = GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE, NUM_INHIBITORY, NUM_EXCITORY, p)
-#CIJ_initial = copy.deepcopy(CIJ) 
-#CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
 
-#plt.matshow(CIJ_initial, cmap=plt.cm.gray)
 figure = plt.matshow(CIJ[0], cmap=plt.cm.gray)
 #figure = plt.matshow(CIJ[1], cmap=plt.cm.gray)
 #figure = plt.matshow(CIJ[2], cmap=plt.cm.gray)
 #figure = plt.matshow(CIJ[3], cmap=plt.cm.gray)
 #plt.show()
 path = os.path.join(DIR_PATH, 'connectivity_matrix.svg')
-plt.savefig(path)
+plt.savefig(path) # save fig
 plt.show()
 
 results = RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib)
