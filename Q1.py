@@ -1,8 +1,9 @@
+from Izhikevic import ConnectIzhikevichNetworkLayers,GenerateNetwork, IzhikevichModularNetwork, RewireModularNetwork
+from Run import RunSimulation
+
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.random as rn
-from Izhikevic import IzhikevichModularNetwork, GenerateNetwork, RewireModularNetwork, ConnectIzhikevichNetworkLayers,CompareMatrix
-from Run import RunSimulation
-import matplotlib.pyplot as plt
 import os
     
 NUM_NEURONS = 1000
