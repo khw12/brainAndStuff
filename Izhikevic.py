@@ -33,12 +33,12 @@ def RewireModularNetwork(CIJ, N, Nm, p):
     start = module * Nm
     end = (module+1) * Nm
     for j in range(start, end):
-        if(CIJ[0][j,i] and (rn.random() < p)):
-            CIJ[0][j,i] = 0
-            k = rn.randint(N)
-            while(k/Nm == module or CIJ[0][k,i] == 1):
-                k = rn.randint(N)
-            CIJ[0][k,i] = 1
+      if(CIJ[0][j,i] and (rn.random() < p)):
+        CIJ[0][j,i] = 0
+        k = rn.randint(N)
+        while(k/Nm == module or CIJ[0][k,i] == 1):
+          k = rn.randint(N)
+        CIJ[0][k,i] = 1
   return CIJ
     
 def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
@@ -76,10 +76,10 @@ def IzhikevichModularNetwork(N, K, Nm, Nc, NI):
      
   # Set up outgoing inhibitory-to-excitory connection
   for i in range (NI):
-      CIJ[1][:, i] = 1
-      CIJ[3][:, i] = 1
-      #CIJ[i, i] = 0
-  
+    CIJ[1][:, i] = 1
+    CIJ[3][:, i] = 1
+    #CIJ[i, i] = 0
+
   return(CIJ)
 
 def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
