@@ -20,7 +20,7 @@ p = 0      # Rewiring probility
 
 DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q1', str(p))
 if not os.path.exists(DIR_PATH):
-    os.makedirs(DIR_PATH)
+  os.makedirs(DIR_PATH)
     
 CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
 net = GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE, NUM_INHIBITORY, NUM_EXCITORY, p)
@@ -68,7 +68,7 @@ for [idt,fired] in firings1:
       # recover the module from nueron number
       module = fired/NUM_EXCITORY_PER_MODULE
       # no need to filter inhib since its firing1
-	    mean_firings[window,module] += 1
+      mean_firings[window,module] += 1
 
 mean_firings /= 50
 

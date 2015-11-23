@@ -1,3 +1,5 @@
+import numpy as np
+
 def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
   v1 = np.zeros([T, NUM_EXCITORY])
   v2 = np.zeros([T, NUM_INHIBITORY])
@@ -14,9 +16,9 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
       if np.random.poisson(0.01) > 0:
         net.layer[0].I[i] = Ib
         
-    for i in range(NUM_INHIBITORY):
-      if np.random.poisson(0.01) > 0:
-        net.layer[1].I[i] = Ib
+    #for i in range(NUM_INHIBITORY):
+    #  if np.random.poisson(0.01) > 0:
+    #    net.layer[1].I[i] = Ib
             
     net.Update(t)
 
