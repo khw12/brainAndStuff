@@ -3,6 +3,16 @@ import numpy.random as rn
 import matplotlib.pyplot as plt
 from IzNetwork import IzNetwork
 
+def GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE,  NUM_INHIBITORY, NUM_EXCITORY, p):
+  CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
+  net = ConnectIzhikevichNetworkLayers(CIJ, NUM_EXCITORY, NUM_INHIBITORY)
+
+  for lr in xrange(len(net.layer)):
+    net.layer[lr].v = -65 * np.ones(net.layer[lr].N)
+    net.layer[lr].u = net.layer[lr].b * net.layer[lr].v
+    net.layer[lr].firings = np.array([])
+
+  return(net)
 
 def CompareMatrix(MatA,MatB,NCol,NRow):
   for i in range(NRow):

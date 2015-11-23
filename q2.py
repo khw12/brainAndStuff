@@ -1,6 +1,7 @@
 import numpy as np
 import numpy.random as rn
-from Izhikevic import IzhikevichModularNetwork, RewireModularNetwork, ConnectIzhikevichNetworkLayers,CompareMatrix
+from Izhikevic import IzhikevichModularNetwork, GenerateNetwork, RewireModularNetwork, ConnectIzhikevichNetworkLayers,CompareMatrix
+from Run import RunSimulation
 import matplotlib.pyplot as plt
 from jpype import *
 import atexit
@@ -38,41 +39,14 @@ for i in range(1):
     print str(i) + 'th iteration: p is now: ' + str(p)
     
     CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
-    CIJ = RewireModularNetwork(CIJ, NUM_EXCITORY, NUM_EXCITORY_PER_MODULE, p)
+    net = GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE, NUM_INHIBITORY, NUM_EXCITORY, p)
     
-    net = ConnectIzhikevichNetworkLayers(CIJ, NUM_EXCITORY, NUM_INHIBITORY)
-    
-    ## Initialise layers
-    for lr in xrange(len(net.layer)):
-        net.layer[lr].v = -65 * np.ones(net.layer[lr].N)
-        net.layer[lr].u = net.layer[lr].b * net.layer[lr].v
-        net.layer[lr].firings = np.array([])
-    
-    v1 = np.zeros([T, NUM_EXCITORY])
-    v2 = np.zeros([T, NUM_INHIBITORY])
-    u1 = np.zeros([T, NUM_EXCITORY])
-    u2 = np.zeros([T, NUM_INHIBITORY])
-    
-    ## SIMULATE
-    for t in xrange(T):
-        net.layer[0].I = np.zeros(NUM_EXCITORY)
-        net.layer[1].I = np.zeros(NUM_INHIBITORY)
-        
-        # Background firing
-        for i in range(NUM_EXCITORY):
-            if np.random.poisson(0.01) > 0:
-                net.layer[0].I[i] = Ib
-            
-        for i in range(NUM_INHIBITORY):
-            if np.random.poisson(0.01) > 0:
-                net.layer[1].I[i] = Ib
-                
-        net.Update(t)
-    
-        v1[t] = net.layer[0].v
-        v2[t] = net.layer[1].v
-        u1[t] = net.layer[0].u
-        u2[t] = net.layer[1].u
+    results = RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib)
+    net = results[0]
+    v1 = results[1]
+    v2 = results[2]
+    u1 = results[3]
+    u2 = results[4]
     
     ## Retrieve firings and add Dirac pulses for presentation
     firings1 = net.layer[0].firings
@@ -97,13 +71,13 @@ for i in range(1):
     
     # note firings is array of array of [t f] where t is timestamp and f is source 
     for [idt,fired] in firings1:
-    	if idt > 1000: # discard first second
-    		for window, t_start in enumerate(mean_time):
-    			if (t_start + 50 > idt) & (t_start <= idt):
-    				# recover the module from nueron number
-    				module = fired/NUM_EXCITORY_PER_MODULE
-    				# no need to filter inhib since its firing1
-    				mean_firings[window,module] += 1
+      if idt > 1000: # discard first second
+        for window, t_start in enumerate(mean_time):
+          if (t_start + 50 > idt) & (t_start <= idt):
+            # recover the module from nueron number
+            module = fired/NUM_EXCITORY_PER_MODULE
+            # no need to filter inhib since its firing1
+            mean_firings[window,module] += 1
     
     mean_firings /= 50
     
