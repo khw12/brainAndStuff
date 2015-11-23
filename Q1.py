@@ -30,9 +30,8 @@ figure = plt.matshow(CIJ[0], cmap=plt.cm.gray)
 #figure = plt.matshow(CIJ[1], cmap=plt.cm.gray)
 #figure = plt.matshow(CIJ[2], cmap=plt.cm.gray)
 #figure = plt.matshow(CIJ[3], cmap=plt.cm.gray)
-#plt.show()
-path = os.path.join(DIR_PATH, 'connectivity_matrix.svg')
-plt.savefig(path) # save fig
+path = os.path.join(DIR_PATH, 'connectivity_matrix.svg') # file name and path
+plt.savefig(path) 
 plt.show()
 
 results = RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib)
@@ -86,8 +85,9 @@ plt.ylabel('Voltage (mV)')
 plt.ylim([-90, 40])
 plt.xlabel('Time (ms)')
 
-path = os.path.join(DIR_PATH, 'membrane_potential.svg')
-fig.savefig(path)
+path = os.path.join(DIR_PATH, 'membrane_potential.svg') # file name and path
+fig.savefig(path) 
+
 ## Plot recovery variable
 plt.figure(2)
 plt.subplot(211)
@@ -120,7 +120,7 @@ if firings2.size != 0:
   plt.xlabel('Time (ms)')
   plt.title('Population 2 firings')
 
-path = os.path.join(DIR_PATH, 'firings.svg')
+path = os.path.join(DIR_PATH, 'firings.svg') # file name and path
 fig.savefig(path)
 
 ## Mean firing rate
@@ -130,7 +130,7 @@ if firings1.size != 0:
   plt.ylabel('Mean firing rate')
   plt.title('Mean firing rate')
 
-path = os.path.join(DIR_PATH, 'mean_firing.svg')
+path = os.path.join(DIR_PATH, 'mean_firing.svg') # file name and path
 figure4.savefig(path)
 
 plt.show()
