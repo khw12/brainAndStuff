@@ -86,7 +86,7 @@ def simulation_wrapper(T,p):
     plt.xlim(0, T)
     plt.ylabel('Neuron number')
     plt.ylim(0, NUM_EXCITORY+1)
-    plt.title('Population 1 firings')
+    plt.title('Population 1 firings for p =' + str(p))
 
   if firings2.size != 0:
     plt.subplot(212)
@@ -95,15 +95,20 @@ def simulation_wrapper(T,p):
     plt.ylabel('Neuron number')
     plt.ylim(0, NUM_INHIBITORY+1)
     plt.xlabel('Time (ms)')
-    plt.title('Population 2 firings')
+    plt.title('Population 2 firings for p =' + str(p))
+
+  path = os.path.join(DIR_PATH, 'firings'+str(p)+'.svg') # file name and path
+  fig1.savefig(path)
 
   ## Mean firing rate
   fig2 = plt.figure()
   if firings1.size != 0:
     plt.plot(mean_time, mean_firings)
     plt.ylabel('Mean firing rate')
-    plt.title('Mean firing rate')
+    plt.title('Mean firing rate for p =' + str(p))
 
+  path = os.path.join(DIR_PATH, 'mean_firing'+str(p)+'.svg') # file name and path
+  fig2.savefig(path)
   plt.show()
   # -------------------------------------------------
   return mean_firings, p
