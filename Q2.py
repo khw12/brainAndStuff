@@ -1,10 +1,11 @@
+from Izhikevic import ConnectIzhikevichNetworkLayers,GenerateNetwork, IzhikevichModularNetwork, RewireModularNetwork
+from jpype import *
+from Run import RunSimulation
+
+import atexit
+import matplotlib.pyplot as plt
 import numpy as np
 import numpy.random as rn
-from Izhikevic import IzhikevichModularNetwork, GenerateNetwork, RewireModularNetwork, ConnectIzhikevichNetworkLayers,CompareMatrix
-from Run import RunSimulation
-import matplotlib.pyplot as plt
-from jpype import *
-import atexit
 import os
 
 DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q2')
