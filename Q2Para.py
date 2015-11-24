@@ -17,7 +17,7 @@ except:
 
 # ------------------------------------------------------------------------
 # simulation 
-REPEATS = 8
+REPEATS = 20
 T = 1000 *60
 
 if __name__ == '__main__':
@@ -38,7 +38,6 @@ if __name__ == '__main__':
 startJVM(getDefaultJVMPath(), "-Djava.class.path=" + "infodynamics.jar")
 teCalcClass = JPackage("infodynamics.measures.continuous.kraskov").MultiInfoCalculatorKraskov2
 teCalc = teCalcClass()
-#atexit.register(shutdownJVM)    #doesn't catch system error
 
 integration_result = []
 
@@ -62,8 +61,12 @@ if len(I) != 0:
  plt.xlim(0, 1)
  plt.xlabel('Rewiring probability p')
  plt.title('Integration')
-#path = os.path.join(DIR_PATH, 'integration.svg')
-#fig3.savefig(path)
  
-plt.show()
+DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q2')
+  if not os.path.exists(DIR_PATH):
+    os.makedirs(DIR_PATH)
+path = os.path.join(DIR_PATH, 'integration.svg')
+fig3.savefig(path)
+ 
+#plt.show()
 # ------------------------------------------------------------------------
