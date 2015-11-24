@@ -13,7 +13,7 @@ NUM_INHIBITORY = 200
 NUM_CONNECTIONS_E_to_E = 1000
 NUM_CONNECTIONS_E_to_I = 4
 BG_FIRING_PROB = 0.01
-
+Ib = 15    # Base current
 
 def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
   v1 = np.zeros([T, NUM_EXCITORY])
@@ -46,14 +46,15 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
   
   
 def simulation_wrapper(T,p,question,discard,save):
-  # fig save path
-  DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q'+str(question),'p'+str(p))
-  if not os.path.exists(DIR_PATH):
-    os.makedirs(DIR_PATH)
-  
   print 'p is now: ' + str(p)
-  print 'figure save path: ' + DIR_PATH
-  Ib = 15    # Base current
+
+  # fig save path
+  if save:
+    DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q'+str(question),'p'+str(p))
+    if not os.path.exists(DIR_PATH):
+      os.makedirs(DIR_PATH)
+    print 'figure saved at path: ' + DIR_PATH
+
   CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
   net = GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE, NUM_INHIBITORY, NUM_EXCITORY, p)
 
