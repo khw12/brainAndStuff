@@ -56,8 +56,10 @@ if firings2.size != 0:
 ## Mean firing rates
 # note downsampling into intervals of 50ms
 # init var
-mean_firings = np.zeros([50,8])
-mean_time = range(0,1000,20)
+INTERVAL = 20
+NUM_SAMPLES = T/INTERVAL
+mean_firings = np.zeros([NUM_SAMPLES,NUM_MODULES])
+mean_time = range(0,T,INTERVAL)
 
 # note firings is array of array of [t f] where t is timestamp and f is source 
 for [idt,fired] in firings1:
@@ -127,7 +129,7 @@ fig.savefig(path)
 ## Mean firing rate
 figure4 = plt.figure(4)
 if firings1.size != 0:
-  plt.plot(range(0, 1000, 20), mean_firings)
+  plt.plot(mean_time, mean_firings)
   plt.ylabel('Mean firing rate')
   plt.title('Mean firing rate')
 
