@@ -28,10 +28,10 @@ atexit.register(shutdownJVM)    #doesn't catch system error
 
 res = []
 
-for i in range(1):
-  T  = 1000 * 60 # Simulation time
+for i in range(20):
+  T  = 1000*60 # Simulation time
   Ib = 15    # Base current
-  p = 0.01*i  # Rewiring probility
+  p = rn.random()  # Rewiring probility
   
   # # override for testing 
   #T = 1000 * 2 # for testing
