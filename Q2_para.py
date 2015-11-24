@@ -71,11 +71,9 @@ def simulation_wrapper(T,p):
     if idt > 1000: # discard first second
       mid_index = (idt-1000)/20
       insert_indices = [mid_index-1,mid_index,mid_index+1]
-      print idt-1000,insert_indices
       for ind in insert_indices:
         if (ind>=0) & (ind<NUM_SAMPLES):
           module = fired/NUM_EXCITORY_PER_MODULE
-          print ind
           mean_firings[ind,module] += 1
   
   mean_firings /= 50
