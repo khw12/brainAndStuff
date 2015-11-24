@@ -18,14 +18,14 @@ except:
 # ------------------------------------------------------------------------
 # simulation 
 REPEATS = 8
-T = 1000 *2
+T = 1000 *60
 
 if __name__ == '__main__':
   rewire_probs = rn.uniform(0,1,REPEATS)
   mean_firings_res = []
   try:
     pool = Pool(8)
-    function_arg = itertools.izip(itertools.repeat(T),rewire_probs,itertools.repeat(2),itertools.repeat(1000))
+    function_arg = itertools.izip(itertools.repeat(T),rewire_probs,itertools.repeat(2),itertools.repeat(1000), itertools.repeat(False))
     mean_firings_res = pool.map(simulation_wrapper_star, function_arg)
   except:
     for p in np.nditer(rewire_probs):

@@ -10,6 +10,7 @@ try:
   from multiprocessing import Pool
   import itertools
 except:
+  print "Did not import"
   pass    
     
 # ------------------------------------------------------------------------
@@ -21,11 +22,11 @@ if __name__ == '__main__':
   mean_firings_res = []
   try:
     pool = Pool(8)
-    function_arg = itertools.izip(itertools.repeat(T),rewire_probs,itertools.repeat(1),itertools.repeat(0))
+    function_arg = itertools.izip(itertools.repeat(T),rewire_probs,itertools.repeat(1),itertools.repeat(0), itertools.repeat(True))
     mean_firings_res = pool.map(simulation_wrapper_star, function_arg)
   except:
     for p in np.nditer(rewire_probs):
-      res = simulation_wrapper(T,p,1,0)
+      res = simulation_wrapper(T,p,1,0,True)
       mean_firings_res.append(res)
 
 # ------------------------------------------------------------------------

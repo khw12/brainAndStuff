@@ -45,7 +45,7 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
   return([net, v1, v2, u1, u2])
   
   
-def simulation_wrapper(T,p,question,discard):
+def simulation_wrapper(T,p,question,discard,save):
   # fig save path
   DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q'+str(question),'p'+str(p))
   if not os.path.exists(DIR_PATH):
@@ -57,6 +57,11 @@ def simulation_wrapper(T,p,question,discard):
   CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
   net = GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE, NUM_INHIBITORY, NUM_EXCITORY, p)
 
+  figure = plt.matshow(CIJ[0], cmap=plt.cm.gray, fignum=0)
+  if save:
+    path = os.path.join(DIR_PATH, 'connectivity_matrix_'+str(p)+'.svg') # file name and path
+    plt.savefig(path) 
+    
   results = RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib)
   net = results[0]
   v1 = results[1]
@@ -118,8 +123,9 @@ def simulation_wrapper(T,p,question,discard):
       plt.xlabel('Time (ms)')
       plt.title('Population 2 firings for p =' + str(p))
   
-    path = os.path.join(DIR_PATH, 'firings'+str(p)+'.svg') # file name and path
-    fig1.savefig(path)
+    if save:
+      path = os.path.join(DIR_PATH, 'firings_'+str(p)+'.svg') # file name and path
+      fig1.savefig(path)
   
     ## Mean firing rate
     fig2 = plt.figure()
@@ -128,9 +134,10 @@ def simulation_wrapper(T,p,question,discard):
       plt.ylabel('Mean firing rate')
       plt.title('Mean firing rate for p =' + str(p))
   
-    path = os.path.join(DIR_PATH, 'mean_firing'+str(p)+'.svg') # file name and path
-    fig2.savefig(path)
-    plt.show()
+    if save:
+      path = os.path.join(DIR_PATH, 'mean_firing_'+str(p)+'.svg') # file name and path
+      fig2.savefig(path)
+    #plt.show()
   # -------------------------------------------------
   return mean_firings, p
 
