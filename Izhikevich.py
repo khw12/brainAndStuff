@@ -114,7 +114,7 @@ def ConnectIzhikevichNetworkLayers(CIJ, NExcitoryLayer, NInhibitoryLayer):
   network.layer[0].S[1] = np.multiply(network.layer[0].S[1],rand_array)
 
   # Set neuron parameters for inhibitory layer
-  rand = rn.rand(NInhibitoryLayer)*0
+  rand = rn.rand(NInhibitoryLayer)
   network.layer[1].N = NInhibitoryLayer
   network.layer[1].a = 0.02 + 0.08*rand
   network.layer[1].b = 0.25 - 0.05*rand

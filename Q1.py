@@ -16,7 +16,7 @@ NUM_CONNECTIONS_E_to_I = 4
 
 T  = 1000  # Simulation time
 Ib = 15    # Base current
-p = 0.9      # Rewiring probility
+p = 0      # Rewiring probility
 
 
 # fig save path
@@ -58,19 +58,20 @@ if firings2.size != 0:
 # init var
 INTERVAL = 20
 NUM_SAMPLES = T/INTERVAL
+WINDOW_SIZE = 50
 mean_firings = np.zeros([NUM_SAMPLES,NUM_MODULES])
 mean_time = range(0,T,INTERVAL)
 
 # note firings is array of array of [t f] where t is timestamp and f is source 
 for [idt,fired] in firings1:
   for window, t_start in enumerate(mean_time):
-    if (t_start + 50 > idt) & (t_start <= idt):
+    if (t_start + WINDOW_SIZE > idt) && (t_start <= idt):
       # recover the module from nueron number
       module = fired/NUM_EXCITORY_PER_MODULE
       # no need to filter inhib since its firing1
       mean_firings[window,module] += 1
 
-mean_firings /= 50
+mean_firings /= WINDOW_SIZE
 
 
 ## Plot membrane potentials
