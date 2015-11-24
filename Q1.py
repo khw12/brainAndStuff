@@ -64,13 +64,13 @@ mean_time = range(0,T,INTERVAL)
 
 # note firings is array of array of [t f] where t is timestamp and f is source 
 for [idt,fired] in firings1:
-  for window, t_start in enumerate(mean_time):
-    if (t_start + WINDOW_SIZE > idt) && (t_start <= idt):
-      # recover the module from nueron number
+  mid_index = (idt)/INTERVAL
+  insert_indices = [mid_index-1,mid_index,mid_index+1] # +1 and -1 from 50/20
+  for ind in insert_indices:
+    if (ind>=0) & (ind<NUM_SAMPLES):
       module = fired/NUM_EXCITORY_PER_MODULE
-      # no need to filter inhib since its firing1
-      mean_firings[window,module] += 1
-
+      mean_firings[ind,module] += 1
+  
 mean_firings /= WINDOW_SIZE
 
 
