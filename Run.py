@@ -45,7 +45,7 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
   return([net, v1, v2, u1, u2])
   
   
-def simulation_wrapper(T,p,question):
+def simulation_wrapper(T,p,question,discard):
   # fig save path
   DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q'+str(question),'p'+str(p))
   if not os.path.exists(DIR_PATH):
@@ -79,15 +79,15 @@ def simulation_wrapper(T,p,question):
   # note downsampling into intervals of 50ms
   # init var
   INTERVAL = 20
-  NUM_SAMPLES = (T-1000)/INTERVAL # discard first second
+  NUM_SAMPLES = (T-discard)/INTERVAL # discard first second
 
   mean_firings = np.zeros([NUM_SAMPLES,NUM_MODULES]) # 
-  mean_time = range(1000,T,INTERVAL) # start after first second
+  mean_time = range(discard,T,INTERVAL) # start after first second
   
   # note firings is array of array of [t f] where t is timestamp and f is source 
   for [idt,fired] in firings1:
-    if idt > 1000: # discard first second
-      mid_index = (idt-1000)/20
+    if idt > discard: # discard 
+      mid_index = (idt-discard)/20
       insert_indices = [mid_index-1,mid_index,mid_index+1]
       for ind in insert_indices:
         if (ind>=0) & (ind<NUM_SAMPLES):

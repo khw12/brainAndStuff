@@ -25,7 +25,7 @@ if __name__ == '__main__':
   mean_firings_res = []
   try:
     pool = Pool(8)
-    function_arg = itertools.izip(itertools.repeat(T),rewire_probs,itertools.repeat(2))
+    function_arg = itertools.izip(itertools.repeat(T),rewire_probs,itertools.repeat(2),itertools.repeat(1000))
     mean_firings_res = pool.map(simulation_wrapper_star, function_arg)
   except:
     for p in np.nditer(rewire_probs):
