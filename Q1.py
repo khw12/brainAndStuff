@@ -1,4 +1,4 @@
-from Izhikevic import ConnectIzhikevichNetworkLayers,GenerateNetwork, IzhikevichModularNetwork, RewireModularNetwork
+from Izhikevich import ConnectIzhikevichNetworkLayers,GenerateNetwork, IzhikevichModularNetwork, RewireModularNetwork
 from Run import RunSimulation
 
 import matplotlib.pyplot as plt
@@ -16,7 +16,7 @@ NUM_CONNECTIONS_E_to_I = 4
 
 T  = 1000  # Simulation time
 Ib = 15    # Base current
-p = 0      # Rewiring probility
+p = 0.9      # Rewiring probility
 
 
 # fig save path
