@@ -12,7 +12,7 @@ NUM_EXCITORY_PER_MODULE = 100
 NUM_INHIBITORY = 200
 NUM_CONNECTIONS_E_to_E = 1000
 NUM_CONNECTIONS_E_to_I = 4
-
+BG_FIRING_PROB = 0.01
 
 
 def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
@@ -28,11 +28,11 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
     
     # Background firing
     for i in range(NUM_EXCITORY):
-      if np.random.poisson(0.01) > 0:
+      if np.random.poisson(BG_FIRING_PROB) > 0:
         net.layer[0].I[i] = Ib
         
     for i in range(NUM_INHIBITORY):
-      if np.random.poisson(0.01) > 0:
+      if np.random.poisson(BG_FIRING_PROB) > 0:
         net.layer[1].I[i] = Ib
             
     net.Update(t)
@@ -85,7 +85,8 @@ def simulation_wrapper(T,p,question,discard,save):
   # init var
   INTERVAL = 20
   NUM_SAMPLES = (T-discard)/INTERVAL # discard first second
-
+  WINDOW_SIZE = 50
+  
   mean_firings = np.zeros([NUM_SAMPLES,NUM_MODULES]) # 
   mean_time = range(discard,T,INTERVAL) # start after first second
   
@@ -99,7 +100,7 @@ def simulation_wrapper(T,p,question,discard,save):
           module = fired/NUM_EXCITORY_PER_MODULE
           mean_firings[ind,module] += 1
   
-  mean_firings /= 50
+  mean_firings /= WINDOW_SIZE
 
   # -------------------------------------------------
   ## Raster plots of firings
