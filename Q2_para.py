@@ -30,8 +30,8 @@ NUM_INHIBITORY = 200
 NUM_CONNECTIONS_E_to_E = 1000
 NUM_CONNECTIONS_E_to_I = 4
 
-REPEATS = 1
-T = 1000 *2
+REPEATS = 8
+T = 1000 *20
 
 def simulation_wrapper(T,p):
   print 'p is now: ' + str(p)
@@ -82,7 +82,8 @@ def simulation_wrapper(T,p):
 
   # -------------------------------------------------
   ## Raster plots of firings
-  if not str(sys.argv[1]) == str(1):
+
+  if len(sys.argv) == 1 or str(sys.argv[1]) != str(1):
     fig1 = plt.figure()
     if firings1.size != 0:
       plt.subplot(211)
@@ -124,14 +125,14 @@ def simulation_wrapper_star(T_p):
 if __name__ == '__main__':
   rewire_probs = rn.uniform(0,1,REPEATS)
   mean_firings_res = []
-#  try:
-  pool = Pool(8)
-  function_arg = itertools.izip(itertools.repeat(T),rewire_probs)
-  mean_firings_res = pool.map(simulation_wrapper_star, function_arg)
-#  except:
-#    for p in np.nditer(rewire_probs):
-#      res = simulation_wrapper(T,p)
-#      mean_firings_res.append(res)
+  try:
+    pool = Pool(8)
+    function_arg = itertools.izip(itertools.repeat(T),rewire_probs)
+    mean_firings_res = pool.map(simulation_wrapper_star, function_arg)
+  except:
+    for p in np.nditer(rewire_probs):
+      res = simulation_wrapper(T,p)
+      mean_firings_res.append(res)
 
 #Start JVM
 startJVM(getDefaultJVMPath(), "-Djava.class.path=" + "infodynamics.jar")
