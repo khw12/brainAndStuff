@@ -133,5 +133,5 @@ if len(I) != 0:
 path = os.path.join(DIR_PATH, 'integration.svg')
 fig3.savefig(path)
 
-plt.show()
+#plt.show()
 shutdownJVM()

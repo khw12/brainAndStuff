@@ -5,7 +5,7 @@ from Run import RunSimulation,simulation_wrapper_star,simulation_wrapper
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.random as rn
-
+import os
 
 # try to import modules for multiprocessing
 try:
@@ -17,19 +17,19 @@ except:
 
 # ------------------------------------------------------------------------
 # simulation 
-REPEATS = 8
-T = 1000 *2
+REPEATS = 20
+T = 1000 * 60
 
 if __name__ == '__main__':
   rewire_probs = rn.uniform(0,1,REPEATS)
   mean_firings_res = []
   try:
     pool = Pool(8)
-    function_arg = itertools.izip(itertools.repeat(T),rewire_probs,itertools.repeat(2),itertools.repeat(1000))
+    function_arg = itertools.izip(itertools.repeat(T),rewire_probs,itertools.repeat(2),itertools.repeat(1000), itertools.repeat(False))
     mean_firings_res = pool.map(simulation_wrapper_star, function_arg)
   except:
     for p in np.nditer(rewire_probs):
-      res = simulation_wrapper(T,p,2)
+      res = simulation_wrapper(T,p,2,1000,False)
       mean_firings_res.append(res)
 
 # ------------------------------------------------------------------------
@@ -38,11 +38,11 @@ if __name__ == '__main__':
 startJVM(getDefaultJVMPath(), "-Djava.class.path=" + "infodynamics.jar")
 teCalcClass = JPackage("infodynamics.measures.continuous.kraskov").MultiInfoCalculatorKraskov2
 teCalc = teCalcClass()
-#atexit.register(shutdownJVM)    #doesn't catch system error
 
 integration_result = []
 
 for [mean_firings, p] in mean_firings_res:
+  print p
   teCalc.initialise(8)
   teCalc.startAddObservations()
   teCalc.addObservations(mean_firings)
@@ -57,13 +57,17 @@ I = np.array(integration_result)
 fig3 = plt.figure()
 if len(I) != 0:
  plt.scatter(I[:, 0], I[:, 1], marker='.')
- plt.ylim(0, 5)
+ plt.ylim(0, 6)
  plt.ylabel('Integration(bits)')
  plt.xlim(0, 1)
  plt.xlabel('Rewiring probability p')
  plt.title('Integration')
-#path = os.path.join(DIR_PATH, 'integration.svg')
-#fig3.savefig(path)
  
-plt.show()
+DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q2')
+if not os.path.exists(DIR_PATH):
+  os.makedirs(DIR_PATH)
+path = os.path.join(DIR_PATH, 'integration.svg')
+fig3.savefig(path)
+ 
+#plt.show()
 # ------------------------------------------------------------------------

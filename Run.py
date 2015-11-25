@@ -3,7 +3,6 @@ from Izhikevich import ConnectIzhikevichNetworkLayers,GenerateNetwork, Izhikevic
 import numpy as np
 import matplotlib.pyplot as plt
 import os 
-import sys
 
 NUM_NEURONS = 1000
 NUM_MODULES = 8
@@ -12,8 +11,8 @@ NUM_EXCITORY_PER_MODULE = 100
 NUM_INHIBITORY = 200
 NUM_CONNECTIONS_E_to_E = 1000
 NUM_CONNECTIONS_E_to_I = 4
-
-
+BG_FIRING_PROB = 0.01
+Ib = 15    # Base current
 
 def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
   v1 = np.zeros([T, NUM_EXCITORY])
@@ -28,11 +27,11 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
     
     # Background firing
     for i in range(NUM_EXCITORY):
-      if np.random.poisson(0.01) > 0:
+      if np.random.poisson(BG_FIRING_PROB) > 0:
         net.layer[0].I[i] = Ib
         
     for i in range(NUM_INHIBITORY):
-      if np.random.poisson(0.01) > 0:
+      if np.random.poisson(BG_FIRING_PROB) > 0:
         net.layer[1].I[i] = Ib
             
     net.Update(t)
@@ -45,18 +44,22 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
   return([net, v1, v2, u1, u2])
   
   
-def simulation_wrapper(T,p,question,discard):
-  # fig save path
-  DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q'+str(question),'p'+str(p))
-  if not os.path.exists(DIR_PATH):
-    os.makedirs(DIR_PATH)
-  
+def simulation_wrapper(T,p,question,discard,save):
   print 'p is now: ' + str(p)
-  print 'figure save path: ' + DIR_PATH
-  Ib = 15    # Base current
+
   CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
   net = GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE, NUM_INHIBITORY, NUM_EXCITORY, p)
 
+  # fig save path
+  if save:
+    DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q'+str(question),'p'+str(p))
+    if not os.path.exists(DIR_PATH):
+      os.makedirs(DIR_PATH)
+    print 'figure saved at path: ' + DIR_PATH
+    figure = plt.matshow(CIJ[0], cmap=plt.cm.gray, fignum=0)
+    path = os.path.join(DIR_PATH, 'connectivity_matrix_'+str(p)+'.svg') # file name and path
+    plt.savefig(path) 
+    
   results = RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib)
   net = results[0]
   v1 = results[1]
@@ -80,7 +83,8 @@ def simulation_wrapper(T,p,question,discard):
   # init var
   INTERVAL = 20
   NUM_SAMPLES = (T-discard)/INTERVAL # discard first second
-
+  WINDOW_SIZE = 50
+  
   mean_firings = np.zeros([NUM_SAMPLES,NUM_MODULES]) # 
   mean_time = range(discard,T,INTERVAL) # start after first second
   
@@ -94,12 +98,11 @@ def simulation_wrapper(T,p,question,discard):
           module = fired/NUM_EXCITORY_PER_MODULE
           mean_firings[ind,module] += 1
   
-  mean_firings /= 50
+  mean_firings /= WINDOW_SIZE
 
   # -------------------------------------------------
-  ## Raster plots of firings
-
-  if len(sys.argv) == 1 or str(sys.argv[1]) != str(1):
+  if save:
+    ## Raster plots of firings
     fig1 = plt.figure()
     if firings1.size != 0:
       plt.subplot(211)
@@ -118,7 +121,8 @@ def simulation_wrapper(T,p,question,discard):
       plt.xlabel('Time (ms)')
       plt.title('Population 2 firings for p =' + str(p))
   
-    path = os.path.join(DIR_PATH, 'firings'+str(p)+'.svg') # file name and path
+    
+    path = os.path.join(DIR_PATH, 'firings_'+str(p)+'.svg') # file name and path
     fig1.savefig(path)
   
     ## Mean firing rate
@@ -128,9 +132,8 @@ def simulation_wrapper(T,p,question,discard):
       plt.ylabel('Mean firing rate')
       plt.title('Mean firing rate for p =' + str(p))
   
-    path = os.path.join(DIR_PATH, 'mean_firing'+str(p)+'.svg') # file name and path
+    path = os.path.join(DIR_PATH, 'mean_firing_'+str(p)+'.svg') # file name and path
     fig2.savefig(path)
-    plt.show()
   # -------------------------------------------------
   return mean_firings, p
 
