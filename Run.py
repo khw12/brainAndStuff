@@ -47,18 +47,16 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
 def simulation_wrapper(T,p,question,discard,save):
   print 'p is now: ' + str(p)
 
+  CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
+  net = GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE, NUM_INHIBITORY, NUM_EXCITORY, p)
+
   # fig save path
   if save:
     DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q'+str(question),'p'+str(p))
     if not os.path.exists(DIR_PATH):
       os.makedirs(DIR_PATH)
     print 'figure saved at path: ' + DIR_PATH
-
-  CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
-  net = GenerateNetwork(CIJ, NUM_EXCITORY_PER_MODULE, NUM_INHIBITORY, NUM_EXCITORY, p)
-
-  figure = plt.matshow(CIJ[0], cmap=plt.cm.gray, fignum=0)
-  if save:
+    figure = plt.matshow(CIJ[0], cmap=plt.cm.gray, fignum=0)
     path = os.path.join(DIR_PATH, 'connectivity_matrix_'+str(p)+'.svg') # file name and path
     plt.savefig(path) 
     

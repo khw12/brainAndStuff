@@ -4,17 +4,17 @@ from Run import RunSimulation,simulation_wrapper_star,simulation_wrapper
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.random as rn
-    
+
 # try to import modules for multiprocessing
 try:
   from multiprocessing import Pool
   import itertools
 except:
   pass    
-    
+
 # ------------------------------------------------------------------------
 # simulation 
-T = 1000 
+T = 1000
 
 if __name__ == '__main__':
   rewire_probs = np.arange(0,0.6,0.1)
