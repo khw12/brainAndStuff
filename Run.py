@@ -3,7 +3,6 @@ from Izhikevich import ConnectIzhikevichNetworkLayers,GenerateNetwork, Izhikevic
 import numpy as np
 import matplotlib.pyplot as plt
 import os 
-import sys
 
 NUM_NEURONS = 1000
 NUM_MODULES = 8
