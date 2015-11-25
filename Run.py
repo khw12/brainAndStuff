@@ -104,9 +104,8 @@ def simulation_wrapper(T,p,question,discard,save):
   mean_firings /= WINDOW_SIZE
 
   # -------------------------------------------------
-  ## Raster plots of firings
-
-  if len(sys.argv) == 1 or str(sys.argv[1]) != str(1):
+  if save:
+    ## Raster plots of firings
     fig1 = plt.figure()
     if firings1.size != 0:
       plt.subplot(211)
@@ -125,9 +124,9 @@ def simulation_wrapper(T,p,question,discard,save):
       plt.xlabel('Time (ms)')
       plt.title('Population 2 firings for p =' + str(p))
   
-    if save:
-      path = os.path.join(DIR_PATH, 'firings_'+str(p)+'.svg') # file name and path
-      fig1.savefig(path)
+    
+    path = os.path.join(DIR_PATH, 'firings_'+str(p)+'.svg') # file name and path
+    fig1.savefig(path)
   
     ## Mean firing rate
     fig2 = plt.figure()
@@ -136,10 +135,8 @@ def simulation_wrapper(T,p,question,discard,save):
       plt.ylabel('Mean firing rate')
       plt.title('Mean firing rate for p =' + str(p))
   
-    if save:
-      path = os.path.join(DIR_PATH, 'mean_firing_'+str(p)+'.svg') # file name and path
-      fig2.savefig(path)
-    #plt.show()
+    path = os.path.join(DIR_PATH, 'mean_firing_'+str(p)+'.svg') # file name and path
+    fig2.savefig(path)
   # -------------------------------------------------
   return mean_firings, p
 
