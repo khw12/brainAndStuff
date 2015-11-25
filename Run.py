@@ -91,7 +91,7 @@ def simulation_wrapper(T,p,question,discard,save):
   # note firings is array of array of [t f] where t is timestamp and f is source 
   for [idt,fired] in firings1:
     if idt > discard: # discard 
-      mid_index = (idt-discard)/20
+      mid_index = (idt-discard)/INTERVAL
       insert_indices = [mid_index-1,mid_index,mid_index+1]
       for ind in insert_indices:
         if (ind>=0) & (ind<NUM_SAMPLES):
