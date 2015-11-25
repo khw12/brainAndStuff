@@ -17,8 +17,8 @@ except:
 
 # ------------------------------------------------------------------------
 # simulation 
-REPEATS = 20
-T = 1000 * 60
+REPEATS = 20    # Number of trials
+T = 1000 * 60   # Duration of each trial
 
 if __name__ == '__main__':
   rewire_probs = rn.uniform(0,1,REPEATS)
@@ -42,7 +42,7 @@ teCalc = teCalcClass()
 integration_result = []
 
 for [mean_firings, p] in mean_firings_res:
-  print p
+  print 'Calculating multi-information for p = ' + str(p)
   teCalc.initialise(8)
   teCalc.startAddObservations()
   teCalc.addObservations(mean_firings)
@@ -66,8 +66,9 @@ if len(I) != 0:
 DIR_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'q2')
 if not os.path.exists(DIR_PATH):
   os.makedirs(DIR_PATH)
-path = os.path.join(DIR_PATH, 'integration.svg')
+path = os.path.join(DIR_PATH, 'integration_' + str(REPEATS) + '.svg')
 fig3.savefig(path)
  
+## Uncomment the following line to view graphs in popup windows
 #plt.show()
 # ------------------------------------------------------------------------

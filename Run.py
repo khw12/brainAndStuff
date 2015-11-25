@@ -12,8 +12,10 @@ NUM_INHIBITORY = 200
 NUM_CONNECTIONS_E_to_E = 1000
 NUM_CONNECTIONS_E_to_I = 4
 BG_FIRING_PROB = 0.01
-Ib = 15    # Base current
 
+## Runs simulation on 2-layer net with 
+## layer[0] as Excitory neuron layer, layer[1] as Inhibitory neuron layer
+## for duration of T ms, and with an extra current Ib injected occasionally
 def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
   v1 = np.zeros([T, NUM_EXCITORY])
   v2 = np.zeros([T, NUM_INHIBITORY])
@@ -43,7 +45,10 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
 
   return([net, v1, v2, u1, u2])
   
-  
+## simulation_wrapper constructs a Modular Network with Izhikevich neurons
+## with rewiring probability p, and runs simulation for duration T ms
+## The first discard ms of data will not be used in calculating mean firing
+## rate. Graphs will be saved in directory q$question/ if save is set to True.  
 def simulation_wrapper(T,p,question,discard,save):
   print 'p is now: ' + str(p)
 
@@ -58,8 +63,11 @@ def simulation_wrapper(T,p,question,discard,save):
     print 'figure saved at path: ' + DIR_PATH
     figure = plt.matshow(CIJ[0], cmap=plt.cm.gray, fignum=0)
     path = os.path.join(DIR_PATH, 'connectivity_matrix_'+str(p)+'.svg') # file name and path
-    plt.savefig(path) 
+    plt.savefig(path)
+    ## Uncomment the following line to view graphs in popup windows
+    #plt.show()
     
+  Ib = 15    # Base current
   results = RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib)
   net = results[0]
   v1 = results[1]
@@ -89,8 +97,9 @@ def simulation_wrapper(T,p,question,discard,save):
   mean_time = range(discard,T,INTERVAL) # start after first second
   
   # note firings is array of array of [t f] where t is timestamp and f is source 
+  # timestamps before discard will be 
   for [idt,fired] in firings1:
-    if idt > discard: # discard 
+    if idt > discard:
       mid_index = (idt-discard)/INTERVAL
       insert_indices = [mid_index-1,mid_index,mid_index+1]
       for ind in insert_indices:
@@ -134,8 +143,12 @@ def simulation_wrapper(T,p,question,discard,save):
   
     path = os.path.join(DIR_PATH, 'mean_firing_'+str(p)+'.svg') # file name and path
     fig2.savefig(path)
+   
+    ## Uncomment the following line to view graphs in popup windows
+    #plt.show()
   # -------------------------------------------------
   return mean_firings, p
 
+## Used for parallel processing
 def simulation_wrapper_star(T_p):
     return simulation_wrapper(*T_p)
