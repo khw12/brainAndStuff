@@ -13,10 +13,13 @@ NUM_CONNECTIONS_E_to_E = 1000
 NUM_CONNECTIONS_E_to_I = 4
 BG_FIRING_PROB = 0.01
 
-## Runs simulation on 2-layer net with 
-## layer[0] as Excitory neuron layer, layer[1] as Inhibitory neuron layer
-## for duration of T ms, and with an extra current Ib injected occasionally
+
 def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
+  """
+  Runs simulation on 2-layer net with 
+  layer[0] as Excitory neuron layer, layer[1] as Inhibitory neuron layer
+  for duration of T ms, and with an extra current Ib injected occasionally
+  """
   v1 = np.zeros([T, NUM_EXCITORY])
   v2 = np.zeros([T, NUM_INHIBITORY])
   u1 = np.zeros([T, NUM_EXCITORY])
@@ -45,11 +48,14 @@ def RunSimulation(net, NUM_EXCITORY, NUM_INHIBITORY, T, Ib):
 
   return([net, v1, v2, u1, u2])
   
-## simulation_wrapper constructs a Modular Network with Izhikevich neurons
-## with rewiring probability p, and runs simulation for duration T ms
-## The first discard ms of data will not be used in calculating mean firing
-## rate. Graphs will be saved in directory q$question/ if save is set to True.  
+
 def simulation_wrapper(T,p,question,discard,save):
+  """
+  simulation_wrapper constructs a Modular Network with Izhikevich neurons
+  with rewiring probability p, and runs simulation for duration T ms
+  The first discard ms of data will not be used in calculating mean firing
+  rate. Graphs will be saved in directory q$question/ if save is set to True.    
+  """
   print 'p is now: ' + str(p)
 
   CIJ = IzhikevichModularNetwork(NUM_NEURONS, NUM_MODULES, NUM_EXCITORY_PER_MODULE, NUM_CONNECTIONS_E_to_E, NUM_INHIBITORY)
