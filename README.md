@@ -14,3 +14,8 @@ To generate the graphs,  run ```python Q2.py```. The script saves the following 
 - The firings scatter graph of excitory and inhibitory neuron layer
 - The mean firing rate of the 8 modules of excitory neurons
 - The multiinfo graph
+
+
+## Remark ##
+### Parallelisation
+Simulation of the modular networks was wrapped so parallelisation can be easily achieved using `multiprocessing` with the help of `itertools`. In both `Q1.py` and `Q2.py`, we have added `try` and `except` statements to proceed with the simulation with 1 core only should any exception occur (eg. failed to import multiprocessing module). 
