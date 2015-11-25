@@ -97,7 +97,8 @@ def simulation_wrapper(T,p,question,discard,save):
   mean_time = range(discard,T,INTERVAL) # start after first second
   
   # note firings is array of array of [t f] where t is timestamp and f is source 
-  # timestamps before discard will be 
+  # firings that happened before discard will be ignored
+  # Each firings can be in at most 3 windows
   for [idt,fired] in firings1:
     if idt > discard:
       mid_index = (idt-discard)/INTERVAL
